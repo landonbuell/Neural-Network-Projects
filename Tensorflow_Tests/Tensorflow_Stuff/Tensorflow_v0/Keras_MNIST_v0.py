@@ -12,36 +12,36 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' 
 import tensorflow as tf
 from tensorflow import keras
-
-from sklearn.datasets import fetch_openml
-from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
 
             #### MAIN EXECUTABLE ####
 
 if __name__ == '__main__':
 
-    
+    # LOAD IN DATASET
+    data = keras.datasets.fashion_mnist
+    (X_train,y_train) , (X_test,y_test) = data.load_data()
 
-    # CREATE KERAS MODEL
-    inputs = keras.Input(shape=(784,),batch_size=100,name='Digits')
-    x = keras.layers.Dense(units=128,activation='relu',name='Dense_1')(inputs)
-    x = keras.layers.Dense(units=64,activation='relu',name='Dense_2')(x)
-    outputs = keras.layers.Dense(units=10,activation='softmax',name='Output')(x)
+    class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
+                    'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
+    n_classes = len(class_names)
 
-    MODEL = keras.Model(inputs=inputs,outputs=outputs)
+    sample_idx = 100
+    plt.title(class_names[y_train[sample_idx]],size=20)
+    plt.imshow(X_train[sample_idx],cmap=plt.cm.binary)
+    #plt.show()
 
-    # INITIALIZE DATA SET
-    (X_train,y_train),(y_train,y_test) = keras.datasets.mnist.load_data()
+    y_train = keras.utils.to_categorical(y_train,n_classes,dtype='uint8')
+    y_test = keras.utils.to_categorical(y_test,n_classes,dtype='uint8')
 
-    X_train = X_train.reshape(60000,784,).astype(tf.float32)
-    X_test = X_test.reshape(10000,784,).astype(tf.float32)
-    y_train = y_train.astype(tf.uint8)
-    y_test = y_test.astype(tf.uint8)
+    print(X_train.shape)
 
-    # CONFIGURATION
-    MODEL.compile(optimizer='sgd',loss='mse')
+    # CREATE KERAS MLP MODEL
+    MODEL = keras.Sequential(layers=[],name='JARVIS')
+    MODEL.add(keras.layers.Flatten(input_shape=(28,28),name='Input'))
+    MODEL.add(keras.layers.Dense(units=128,activation='relu',name='layer_1'))
+    MODEL.add(keras.layers.Dense(units=10,activation='softmax',name='output'))  
+    MODEL.compile(optimizer='sgd',loss='mse',
+                  metrics=['Precision','Recall'])
 
-    # TRAINING ON DATA:
-    history = MODEL.fit(x=X_train,y=y_train,batch_size=100,epochs=2)
-
-    hos
+    MODEL.fit(x=X_train,y=y_train,batch_size=128,epochs=200)
