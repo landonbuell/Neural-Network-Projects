@@ -35,7 +35,7 @@ if __name__ == '__main__':
 
     # Train & Show History of Model
     print("\tTraining",CNN_v1.name)
-    model_history = CNN_v1.fit(x=X_train,y=y_train,batch_size=128,epochs=6)
+    model_history = CNN_v1.fit(x=X_train,y=y_train,batch_size=128,epochs=6,verbose=2)
     utils.plot_history(model_history,CNN_v1,show=True)
 
 
