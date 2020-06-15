@@ -4,6 +4,7 @@ Landon Buell
 """
 
 import numpy as np
+import bitstring
 import tensorflow as tf
 import tensorflow.keras as keras
 
@@ -26,26 +27,22 @@ class ApproximationLayer (keras.layers.Layer):
         self.cols = cols        # rol index to apply MSB
         return None
 
+    def mute(self,x):
+        """ Mute bit in single FP-64 value """
+        print(type(x))
+
     def Mute_MSB (self,X):
-        """ Mute Most-Signfigicant bit in exponet of FP-64 """
-        X_shape = X.shape                       # original shape
-        for r in self.rows:
-            for c in self.cols:
-                m,e = np.frexp(X[r][c])     # manitissa,exponent
-                e = 0 if (e > 0) else e     # apply MSB
-                x = np.ldexp(m,e)           # reconstruct 
-                X[r][c] = x                 # overwrite
-        return X                            # return new activations
+        """ Mute Most-Significant-bit in samples,rows,cols """
+        for i in range(len(X)):
+            for r in self.rows:
+                for c in self.cols:
+                    X[i][r][c] = self.mute(X[i][r][c])
+        return X
 
     def call (self,inputs):
         """ Define Compution from input to produce outputs """
-        input_shape = inputs.shape          # shape of input data
-        output = np.array([])               # array to hold outputs
-        for sample in inputs:               # each sample in batch
-            new_sample = tf.numpy_function(self.Mute_MSB,sample,tf.float64)
-            #new_sample = self.Mute_MSB(sample)
-            output = np.append(output,new_sample)
-        return output.reshape(input_shape)  # rehape & return
+        output = self.Mute_MSB(inputs)
+        return inputs
 
             #### FUNCTION DEFINITIONS ####
 
@@ -70,8 +67,8 @@ def Keras_Model (layers,rows=[],cols=[]):
     Return untrained, Compiled Keras Model
     """
     model = keras.models.Sequential(name='Digit_Classifier')
-    model.add(keras.layers.Input(shape=(28,28,1),name='Image'))
-    model.add(ApproximationLayer(rows=rows,cols=cols))
+    model.add(keras.layers.Input(shape=(100,28,28),name='Image'))
+    #model.add(ApproximationLayer(rows=rows,cols=cols))
     model.add(keras.layers.Flatten())
     for I,neurons in enumerate(layers):
         model.add(keras.layers.Dense(units=neurons,activation='relu',
