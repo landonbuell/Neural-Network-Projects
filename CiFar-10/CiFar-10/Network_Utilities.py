@@ -29,15 +29,15 @@ def Neural_Network (name):
     # Convolution / Pooling layers
     model.add(keras.layers.Conv2D(filters=64,kernel_size=(3,3),activation='relu',name='C1'))
     model.add(keras.layers.Conv2D(filters=64,kernel_size=(3,3),activation='relu',name='C2'))
-    model.add(keras.layers.MaxPool2D(pool_size=(4,4),name='P1'))
+    model.add(keras.layers.MaxPool2D(pool_size=(2,2),name='P1'))
 
-    #model.add(keras.layers.Conv2D(filters=64,kernel_size=(3,3),padding='same',activation='relu',kernel_initializer='he_uniform',name='C1'))
-    #model.add(keras.layers.Conv2D(filters=64,kernel_size=(3,3),padding='same',activation='relu',kernel_initializer='he_uniform',name='C2'))
-    #model.add(keras.layers.MaxPool2D(pool_size=(4,4),name='P1'))
+    model.add(keras.layers.Conv2D(filters=64,kernel_size=(3,3),padding='same',activation='relu',name='C3'))
+    model.add(keras.layers.Conv2D(filters=64,kernel_size=(3,3),padding='same',activation='relu',name='C4'))
+    model.add(keras.layers.MaxPool2D(pool_size=(2,2),name='P2'))
 
-    #model.add(keras.layers.Conv2D(filters=64,kernel_size=(3,3),padding='same',activation='relu',kernel_initializer='he_uniform',name='C1'))
-    #model.add(keras.layers.Conv2D(filters=64,kernel_size=(3,3),padding='same',activation='relu',kernel_initializer='he_uniform',name='C2'))
-    #model.add(keras.layers.MaxPool2D(pool_size=(4,4),name='P1'))
+    model.add(keras.layers.Conv2D(filters=64,kernel_size=(3,3),padding='same',activation='relu',name='C5'))
+    model.add(keras.layers.Conv2D(filters=64,kernel_size=(3,3),padding='same',activation='relu',name='C6'))
+    model.add(keras.layers.MaxPool2D(pool_size=(2,2),name='P3'))
 
     # Dense layers
     model.add(keras.layers.Flatten(name='F1'))
